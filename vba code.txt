@@ -1,0 +1,64 @@
+Sub StockData()
+    Dim ws As Worksheet
+    Dim ticker As String
+    Dim volume As Double
+    Dim yearlychange As Double
+    Dim percentchange As Double
+    Dim start As Integer
+    Dim openprice As Double
+    Dim closeprice As Double
+    Dim LastRow As Long
+    Dim i As Long
+    
+For Each ws In Worksheets
+
+    LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    start = 2
+    
+    ws.Range("I1").Value = "Ticker"
+    ws.Range("J1").Value = "Yearly Change"
+    ws.Range("K1").Value = "Percent Change"
+    ws.Range("L1").Value = "Total Stock Volume"
+            
+    For i = 2 To LastRow
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+            
+        ticker = ws.Cells(i, 1).Value
+        volume = ws.Cells(i, 7).Value
+        openprice = ws.Cells(i, 3).Value
+        closeprice = ws.Cells(i, 6).Value
+        yearlychange = closeprice - openprice
+            
+            If closeprice <> 0 Or yearlychange <> 0 Then
+                percentchange = Round((yearlychange / closeprice) * 100, 2)
+            Else
+                percentchange = 0
+            End If
+            
+            If closeprice = 0 Or yearlychange = 0 Then
+                percentchange = 0
+            End If
+            
+        ws.Cells(start, 9).Value = ticker
+        ws.Cells(start, 10).Value = yearlychange
+        ws.Cells(start, 11).Value = percentchange
+        ws.Cells(start, 12).Value = volume
+        start = start + 1
+        
+            If yearlychange > 0 Then
+                ws.Cells(i, 10).Interior.ColorIndex = 4
+            End If
+            
+            If yearlychange < 0 Then
+                ws.Cells(i, 10).Interior.ColorIndex = 3
+            End If
+            
+            If yearlychange = 0 Then
+                ws.Cells(i, 10).Interior.ColorIndex = 0
+            End If
+        
+        End If
+    Next i
+Next ws
+   
+End Sub
